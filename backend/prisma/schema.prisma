@@ -1,0 +1,37 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Alert {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  type      AlertType
+  tts       String
+  message   String
+  name      String
+  month     Int?
+  nominal   Int?      @default(0)
+  currency  String?
+  read      Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt()
+}
+
+enum AlertType {
+  membership
+  donation
+  superChat
+}
+
+model Setting {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  name       String  @default("ardyhim")
+  alertQueue Boolean @default(false)
+  membership String  @default("$name bergabung di kirik club selama $month")
+  donation   String  @default("$name Rp.$nominal $message")
+  superChat  String  @default("$name Rp.$nominal $message")
+}
